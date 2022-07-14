@@ -1,0 +1,33 @@
+---
+on: push
+
+env:
+  PACK_CLI_VERSION: 0.27.0
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-publish-container:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Pack CLI
+        run: |
+          curl -sSL "https://github.com/buildpacks/pack/releases/download/v${PACK_CLI_VERSION}/pack-v${PACK_CLI_VERSION}-linux.tgz" -o pack.tgz
+          tar xzf pack.tgz -C /usr/local/bin pack
+
+      - name: Log in to container registry
+        run: |
+          echo "${{secrets.GITHUB_TOKEN}}" | docker login ghcr.io -u "${{github.actor}}" --password-stdin
+
+      - name: Build and publish container
+        run: |
+          pack build \
+            "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}" \
+            --tag "ghcr.io/${GITHUB_REPOSITORY}:latest" \
+            --publish \
+            --buildpack paketo-buildpacks/nginx \
+            --builder paketobuildpacks/builder:base \
+            --env BP_WEB_SERVER=nginx \
+            --env BP_WEB_SERVER_ROOT=public
