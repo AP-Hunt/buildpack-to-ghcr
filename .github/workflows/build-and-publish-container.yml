@@ -25,6 +25,9 @@ jobs:
       - name: Build and publish container
         run: |
           PACKAGE_NAME="$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
+
+          pack config trusted-builders add paketobuildpacks/builder:base
+
           pack build \
             "ghcr.io/${PACKAGE_NAME}:${GITHUB_SHA}" \
             --tag "ghcr.io/${PACKAGE_NAME}:latest" \
