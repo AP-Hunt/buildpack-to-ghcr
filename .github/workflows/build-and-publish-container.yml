@@ -24,9 +24,10 @@ jobs:
 
       - name: Build and publish container
         run: |
+          PACKAGE_NAME="$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')"
           pack build \
-            "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}" \
-            --tag "ghcr.io/${GITHUB_REPOSITORY}:latest" \
+            "ghcr.io/${PACKAGE_NAME}:${GITHUB_SHA}" \
+            --tag "ghcr.io/${PACKAGE_NAME}:latest" \
             --publish \
             --buildpack paketo-buildpacks/nginx \
             --builder paketobuildpacks/builder:base \
