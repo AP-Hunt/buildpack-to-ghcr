@@ -28,6 +28,7 @@ jobs:
           pack build \
             "ghcr.io/${PACKAGE_NAME}:${GITHUB_SHA}" \
             --tag "ghcr.io/${PACKAGE_NAME}:latest" \
+            --cache-image "ghcr.io/${PACKAGE_NAME}_layer-cache:latest" \
             --publish \
             --buildpack paketo-buildpacks/nginx \
             --builder paketobuildpacks/builder:base \
